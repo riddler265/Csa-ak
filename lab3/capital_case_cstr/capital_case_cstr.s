@@ -1,5 +1,5 @@
 .data
-.org 32
+.org 33
 
 ; === DEFAULTS ===
 input_addr:        .word 0x80
@@ -11,10 +11,10 @@ c_1:               .word 0x01
 c_32:              .word 0x20
 c_terminator:      .word 0x0a
 c_space:           .word 0x20
-c_first_capital_letter: .word 0x5a
+c_last_mem:        .word 0x19
 
 ; === VARIABLES ===
-v_buffer:          .word 0x22
+v_buffer:          .word 0x00
 v_write:           .word 0x01
 v_current_symbol:  .word 0x00
 v_is_first_letter: .word 0x01
@@ -26,9 +26,8 @@ v_is_first_letter: .word 0x01
 .org 0x150
 _start:
 
-    load_addr v_buffer               ; Итерация буффера, проверка режима записи, захват символа, проверка на первый символ.
-    sub c_1
-    store_addr v_buffer
+    load_imm 0x20               ; Итерация буффера, проверка режима записи, захват символа, проверка на первый символ.
+    sub v_buffer
     beqz _halt
 
     load_addr v_write
@@ -92,9 +91,18 @@ _stop_write:
     
     load_imm 0x00
     store_addr v_write
-    store_addr v_current_symbol
+    load_imm 0x00
+    store_ind mem_ptr
 
-    jmp _out_to_mem
+    load_addr mem_ptr
+    add c_1
+    store_addr mem_ptr
+
+    load_addr v_buffer
+    sub c_1
+    store_addr v_buffer
+
+    jmp _start
 
 
 
@@ -113,6 +121,7 @@ _out:
     store_ind output_addr
     
     jmp _out_to_mem
+
 
 
 _out_to_mem:
@@ -139,9 +148,19 @@ _inc_mem_ptr:
     add c_1
     store_addr mem_ptr
 
+    load_addr v_buffer
+    add c_1
+    store_addr v_buffer
+
     jmp _start
 
 
 
 _halt:
+    halt
+
+_remark:
+
+    load_imm 0x00
+    store_ind c_last_mem
     halt
