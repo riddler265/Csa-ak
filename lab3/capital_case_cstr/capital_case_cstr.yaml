@@ -1,0 +1,10 @@
+limit: 1000
+memory_size: 8192
+
+memory_mapped_io:
+  0x80: []
+  0x84: [95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95]
+
+reports:
+  - name: "Execution trace"
+    slice: all
