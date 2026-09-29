@@ -1,5 +1,5 @@
 .data
-.org 33
+.org 0x24
 
 ; === DEFAULTS ===
 input_addr:        .word 0x80
@@ -9,9 +9,8 @@ mem_ptr:           .word 0x00
 ; === CONSTANTS ===
 c_1:               .word 0x01
 c_32:              .word 0x20
-c_terminator:      .word 0x0a
-c_space:           .word 0x20
-c_last_mem:        .word 0x19
+c_ff:              .word 0xff
+c_overflow:        .word -858993460
 
 ; === VARIABLES ===
 v_buffer:          .word 0x00
@@ -21,14 +20,13 @@ v_is_first_letter: .word 0x01
 
 
 
-
 .text
 .org 0x150
 _start:
 
-    load_imm 0x20               ; Итерация буффера, проверка режима записи, захват символа, проверка на первый символ.
+    load_imm 0x20
     sub v_buffer
-    beqz _halt
+    beqz _finish
 
     load_addr v_write
     beqz _fill
@@ -37,31 +35,27 @@ _start:
     load_acc
     store_addr v_current_symbol
 
-    load_imm 0x0a                 ; Проверка на терминатора.
+    load_imm 0x0a
     sub v_current_symbol
     beqz _stop_write
 
-    load_imm 0x20                 ; Проверка на пробел.
+    load_imm 0x20
     sub v_current_symbol
     beqz _set_first_letter
 
     load_addr v_is_first_letter
     beqz _select_symbol
 
-    ; Работа с символами, обязаными передти в верхний регистр.
-
-    load_imm 0x00                 ; Сброс флага первой буквы.
+    load_imm 0x00
     store_addr v_is_first_letter
 
-    ; Проверка на не принадлежность к буквам в нижнем регистре
-
-    load_imm 0x7a                 ; Проверка верхней границы 0x7a >= v_current_symbol
+    load_imm 0x7a
     sub v_current_symbol
     bltz _out
 
     load_imm 0x60
     sub v_current_symbol
-    bgtz _out
+    bgez _out
 
     load_addr v_current_symbol
     sub c_32
@@ -70,15 +64,15 @@ _start:
 
 
 
-_select_symbol:                   ; Проверка на не принадлежность к буквам в нижнем регистре, иначе вывод
+_select_symbol:
 
-    load_imm 0x5a                 ; Проверка верхней границы 0x7a >= v_current_symbol
+    load_imm 0x5a
     sub v_current_symbol
     bltz _out
 
     load_imm 0x40
     sub v_current_symbol
-    bgtz _out
+    bgez _out
 
     load_addr v_current_symbol
     add c_32
@@ -88,7 +82,7 @@ _select_symbol:                   ; Проверка на не принадле�
 
 
 _stop_write:
-    
+
     load_imm 0x00
     store_addr v_write
     load_imm 0x00
@@ -99,7 +93,7 @@ _stop_write:
     store_addr mem_ptr
 
     load_addr v_buffer
-    sub c_1
+    add c_1
     store_addr v_buffer
 
     jmp _start
@@ -116,15 +110,6 @@ _set_first_letter:
 
 
 _out:
-
-    load_addr v_current_symbol
-    store_ind output_addr
-    
-    jmp _out_to_mem
-
-
-
-_out_to_mem:
 
     load_addr v_current_symbol
     store_ind mem_ptr
@@ -156,11 +141,39 @@ _inc_mem_ptr:
 
 
 
-_halt:
-    halt
+_finish:
 
-_remark:
+    load_addr v_write
+    bnez _overflow
 
     load_imm 0x00
-    store_ind c_last_mem
+    store_addr mem_ptr
+
+
+
+_print_loop:
+
+    load_addr mem_ptr
+    load_acc
+    and c_ff
+    beqz _halt
+    store_ind output_addr
+
+    load_addr mem_ptr
+    add c_1
+    store_addr mem_ptr
+
+    jmp _print_loop
+
+
+
+_overflow:
+
+    load_addr c_overflow
+    store_ind output_addr
+
+
+
+_halt:
+
     halt
