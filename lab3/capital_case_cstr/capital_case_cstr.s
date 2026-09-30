@@ -1,5 +1,5 @@
 .data
-.org 0x24
+.org 0x88
 
 ; === DEFAULTS ===
 input_addr:        .word 0x80
@@ -21,7 +21,6 @@ v_is_first_letter: .word 0x01
 
 
 .text
-.org 0x150
 _start:
 
     load_imm 0x20
