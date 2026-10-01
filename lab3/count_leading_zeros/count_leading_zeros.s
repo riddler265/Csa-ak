@@ -1,24 +1,24 @@
 .data
 .org 0x88
 
-\ === DEFAULTS ===
-input_addr: .word 0x80
-output_addr: .word 0x84
+    \ === DEFAULTS ===
+    input_addr:     .word 0x80
+    output_addr:    .word 0x84
 
-\ === CONSTS ===
-c_mask: .word 0x80000000
+    \ === CONSTS ===
+    c_mask:         .word 0x80000000
 
-\ === VARIBLES ===
-v_zeros_count: .word 0x00
-v_number: .word 0x00
-v_continue: .word 0x1
-
+    \ === VARIABLES ===
+    v_zeros_count:  .word 0x00
+    v_number:       .word 0x00
 
 
 .text
 _start:
 
-    @p 0x80
+    @p input_addr
+    a!
+    @
     dup
     if _break
 
@@ -33,7 +33,7 @@ _main_loop:
     @p c_mask
     and
     if _count
-        
+
     @p v_zeros_count
     ;
 
@@ -48,14 +48,18 @@ _count:
     @p v_number
     2*
     !p v_number
-        
-    _main_loop ;    
+
+    _main_loop ;
+
 
 _break:
 
     lit 32
 
+
 _output:
 
-    !p 0x84
-    halt    
+    @p output_addr
+    b!
+    !b
+    halt
