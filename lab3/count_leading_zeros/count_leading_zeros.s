@@ -1,16 +1,16 @@
 .data
 .org 0x88
 
-    \ === DEFAULTS ===
-    input_addr:     .word 0x80
-    output_addr:    .word 0x84
+\ === DEFAULTS ===
+input_addr:     .word 0x80
+output_addr:    .word 0x84
 
-    \ === CONSTS ===
-    c_mask:         .word 0x80000000
+\ === CONSTS ===
+c_mask:         .word 0x80000000
 
-    \ === VARIABLES ===
-    v_zeros_count:  .word 0x00
-    v_number:       .word 0x00
+\ === VARIABLES ===
+v_zeros_count:  .word 0x00
+v_number:       .word 0x00
 
 
 .text

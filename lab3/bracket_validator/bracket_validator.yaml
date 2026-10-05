@@ -1,0 +1,13 @@
+name: "assert bracket_validator('67676767676(6767676]\n') == ([-1], '')"
+limit: 2000
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: ["67676767676(6767676]\n"]
+  0x84: []
+reports:
+  - name: Check results
+    slice: last
+    view: |
+      0x84: {io:0x84:dec}
+    assert: |
+      0x84: [] >>> [-1]
