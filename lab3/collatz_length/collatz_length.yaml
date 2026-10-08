@@ -1,32 +1,15 @@
-name: "assert collatz_length(1) == 0"
+name: "assert collatz_length(67) == 27"
 limit: 2000
 memory_size: 0x1000
 memory_mapped_io:
-  0x80: [3]
+  0x80: [67]
   0x84: []
 reports:
   - name: Check results
     slice: last
     view: |
-
-      Число:   {A0:hex}
-      &Маска:  {A2:hex}
-      Шаги:    {A3:hex}
-      Возврат: {A7:hex}
-
-      Стек:    {Sp:hex}
-
-      Вход:    {io:0x80:hex}
-      Выход:   {io:0x84:hex}
-      
-name: "assert collatz_length(1) == 0"
-limit: 2000
-memory_size: 0x1000
-memory_mapped_io:
-  0x80: [2]
-  0x84: []
-reports:
-  - name: Check results
-    slice: all
-    view: |
-      A3: {A3:hex}
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [27]
