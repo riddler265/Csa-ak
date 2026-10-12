@@ -72,4 +72,4 @@ _input_ble_zero:
 
 _result:
     sw          a3, s2                  ; Загружаем результат в ячейку вывода
-    halt                                ; Холт
+    halt                                ; Холс
