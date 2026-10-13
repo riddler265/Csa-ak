@@ -1,13 +1,15 @@
-name: "assert matrix_2x2_vector_stream(2, 1, 0, 0, 1, 5, 6, 2, 3, 4, 5, 1, -1) == [5, 6, -1, -1]"
+name: "assert matrix_2x2_vector_stream(0) == []"
 limit: 2000
 memory_size: 0x1000
 memory_mapped_io:
-  0x80: [2, 1, 0, 0, 1, 5, 6, 2, 3, 4, 5, 1, -1]
+  0x80: [6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6, 7, 6]
   0x84: []
 reports:
   - name: Check results
     slice: last
     view: |
-      a * x OR c * x : {T1:dec}
-      b * y OR d * y : {T2:dec}
-      overflow       : {T3:hex}
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [85,85,85,85,85,85,85,85,85,85,85,85]
