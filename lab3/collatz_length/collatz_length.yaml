@@ -1,27 +1,15 @@
-<<<<<<< HEAD
-name: "assert collatz_length(1) == 0"
-limit: 2000
-memory_size: 0x1000
-memory_mapped_io:
-  0x80: [1]
-=======
 name: "assert collatz_length(67) == 27"
 limit: 2000
 memory_size: 0x1000
 memory_mapped_io:
   0x80: [67]
->>>>>>> f439585486dc4fd32031be9d159af5a0d5a7fd03
   0x84: []
 reports:
   - name: Check results
     slice: last
     view: |
       numio[0x80]: {io:0x80:dec}
-<<<<<<< HEAD
-      numio[0x84]: {io:0x84:dec}
-=======
       numio[0x84]: {io:0x84:dec}
     assert: |
       numio[0x80]: [] >>> []
       numio[0x84]: [] >>> [27]
->>>>>>> f439585486dc4fd32031be9d159af5a0d5a7fd03
