@@ -72,4 +72,8 @@ _input_ble_zero:
 
 _result:
     sw          a3, s2                  ; Загружаем результат в ячейку вывода
+<<<<<<< HEAD
     halt                                ; Холт
+=======
+    halt                                ; Холс
+>>>>>>> 2f9e45f382e9f6a42b8ea62cf023b2ecaa61ac87
